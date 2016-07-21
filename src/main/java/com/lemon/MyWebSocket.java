@@ -12,7 +12,7 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 //该注解用来指定一个URI，客户端可以通过这个URI来连接到WebSocket。类似Servlet的注解mapping。无需在web.xml中配置。
-@ServerEndpoint("/websocket")
+@ServerEndpoint("/chat")
 public class MyWebSocket {
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
     private static int onlineCount = 0;
@@ -33,6 +33,11 @@ public class MyWebSocket {
         this.session = session;
         webSocketSet.add(this);     //加入set中
         addOnlineCount();           //在线数加1
+        try {
+            session.getBasicRemote().sendText("系统提示: 您已加入聊天");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         System.out.println("有新连接加入！当前在线人数为" + getOnlineCount());
     }
 
@@ -59,7 +64,7 @@ public class MyWebSocket {
         //群发消息
         for (MyWebSocket item : webSocketSet) {
             try {
-                item.sendMessage(message);
+                item.session.getBasicRemote().sendText(message);
             } catch (IOException e) {
                 e.printStackTrace();
                 continue;
@@ -77,17 +82,6 @@ public class MyWebSocket {
     public void onError(Session session, Throwable error) {
         System.out.println("发生错误");
         error.printStackTrace();
-    }
-
-    /**
-     * 这个方法与上面几个方法不一样。没有用注解，是根据自己需要添加的方法。
-     *
-     * @param message
-     * @throws IOException
-     */
-    public void sendMessage(String message) throws IOException {
-        this.session.getBasicRemote().sendText("server:" + message);
-        //this.session.getAsyncRemote().sendText(message);
     }
 
     public static synchronized int getOnlineCount() {

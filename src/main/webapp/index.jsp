@@ -6,12 +6,20 @@
     <title>Test websocket server</title>
 </head>
 <body>
-<h1 style="text-align:center">Welcome | Test websocket server</h1><br/>
+<h1 style="text-align:center"><font size="16px">Welcome | websocket-based chat server</font></h1><br/>
 <div style="text-align:center">
-    <input id="text" type="text" />
-    <button onclick="send()">Send</button>&nbsp;<button onclick="closeSocket()">Close</button>
+    <input id="text" style="width:200px;" type="text"/>
+    <button onclick="send()">发送</button>
+    <button onclick="closeSocket()">退出聊天</button>
     <div id="message"></div>
 </div>
+
+<div style="position: fixed; bottom: 0; text-align: center">
+<strong>Author:hztaoran</strong><br/>
+<strong>Github:https://github.com/Lemonjing</strong></br>
+<strong>2016-7-3 All Rights Reserved.</strong><br/><br/>
+</div>
+
 </body>
 
 <script type="text/javascript">
@@ -19,7 +27,7 @@
 
     // 判断当前浏览器是否支持WebSocket
     if ('WebSocket' in window) {
-        websocket = new WebSocket("ws://localhost:8080/websocket");
+        websocket = new WebSocket("ws://localhost:8080/websocket/chat");
     } else {
         alert('Not Support WebSocket');
     }
@@ -54,7 +62,7 @@
     }
 
     function onOpen(event) {
-        document.getElementById('message').innerHTML = 'Connection established';
+        document.getElementById('message').innerHTML = 'Tip: Connection established';
     }
 
     function onMessage(event) {
